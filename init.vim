@@ -3,15 +3,17 @@ call plug#begin('~/.local/shared/nvim/plugged')
 Plug 'scrooloose/nerdtree', {'on': 'NERDTreeToggle'}
 Plug 'danro/rename.vim'
 Plug 'bling/vim-airline'
+Plug 'aswathkk/darkscene.vim'
+Plug 'neoclide/coc.nvim'
 Plug 'junegunn/fzf.vim'
 Plug 'altercation/vim-colors-solarized'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'scrooloose/syntastic'
 Plug 'kien/ctrlp.vim'
-Plug 'NLKNguyen/papercolor-theme'
 Plug 'airblade/vim-gitgutter'
-Plug 'lervag/vimtex'
+Plug 'arcticicestudio/nord-vim'
 Plug 'wvffle/vimterm'
+Plug 'rakr/vim-one'
 
 call plug#end()
 
@@ -28,16 +30,15 @@ tnoremap <C-j> <C-\><C-n><C-w>j
 tnoremap <C-k> <C-\><C-n><C-w>k
 tnoremap <C-l> <C-\><C-n><C-w>l
 
-
-" Paper color colorscheme
-"
-"
-"
- 
-colorscheme PaperColor
-set background=dark
-
+" Colorscheme preferences
+colorscheme darkscene
+set termguicolors
 set showbreak=↳ " display this character in front of wrapped lines
+let g:airline_theme='darkscene'
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#bufferline#enabled = 1
+set cursorline
 
 " Backup, Undo, Swap
 set noswapfile " don't keep swap files
@@ -78,3 +79,60 @@ set mouse=
 
 let g:syntastic_fortran_compiler = 'ifort'
 let g:syntastic_fortran_remove_include_errors = 1
+
+let g:syntastic_cpp_compiler="icpc"
+let g:syntastic_cpp_compiler_options="-Wall"
+
+" Coc config
+set hidden
+set nobackup
+set nowritebackup
+
+" More space for displaying messages
+set cmdheight=2
+
+set updatetime=300
+
+set shortmess+=c
+if has("patch-8.1.1564")
+    set signcolumn=number
+else
+    set signcolumn=yes
+end
+
+" Use tab for trigger completion with characters ahead and navigate.
+" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" other plugin before putting this into your config.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Use <c-space> to trigger completion.
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-@> coc#refresh()
+endif
+
+" Make <CR> auto-select the first completion item and notify coc.nvim to
+" format on enter, <cr> could be remapped by other vim plugin
+inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+" Use `[g` and `]g` to navigate diagnostics
+" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" GoTo code navigation.
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
